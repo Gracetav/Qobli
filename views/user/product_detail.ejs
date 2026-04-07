@@ -1,0 +1,58 @@
+<%- include('../layouts/header') %>
+
+<div class="mb-10">
+    <a href="/" class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-red-600 transition-colors flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Kembali ke Katalog
+    </a>
+</div>
+
+<div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
+    <!-- Image Section -->
+    <div class="md:w-1/2 p-12 flex items-center justify-center bg-gray-50/50">
+        <div class="relative group">
+            <% if(product.image) { %>
+                <img src="/uploads/products/<%= product.image %>" class="w-full max-w-md h-auto object-contain transform group-hover:scale-105 transition-transform duration-700">
+            <% } else { %>
+                <div class="bg-gray-200 w-80 h-80 flex flex-col items-center justify-center text-gray-400 rounded-3xl">
+                    <svg class="w-24 h-24 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="text-xs mt-4 font-black uppercase tracking-widest">No Image Preview</span>
+                </div>
+            <% } %>
+            <div class="absolute -top-6 -left-6 bg-red-600 text-white px-8 py-2 rounded-full font-black text-[10px] uppercase tracking-widest shadow-xl rotate-[-5deg]">Original Component</div>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="md:w-1/2 p-12 md:p-16 flex flex-col justify-center space-y-10">
+        <div>
+            <h2 class="text-4xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter mb-4"><%= product.name %></h2>
+            <div class="flex items-center gap-6">
+                <span class="text-3xl md:text-4xl font-black text-red-600">Rp<%= product.price.toLocaleString('id-ID') %></span>
+                <span class="text-xs bg-gray-100 px-4 py-2 rounded-full font-bold text-gray-500 uppercase tracking-widest border border-gray-200">Stok: <%= product.stock %> items</span>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <h4 class="text-xs font-black text-gray-900 uppercase tracking-widest border-b pb-4">Deskripsi Produk</h4>
+            <p class="text-gray-500 font-medium leading-relaxed"><%= product.description || 'Tidak ada deskripsi untuk produk ini.' %></p>
+        </div>
+
+        <form action="/user/cart/add" method="POST" class="space-y-6 pt-6 ">
+            <input type="hidden" name="product_id" value="<%= product.id %>">
+            <div class="flex items-end gap-6">
+                <div class="w-24">
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jumlah</label>
+                    <input type="number" name="qty" value="1" min="1" max="<%= product.stock %>" class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-2xl font-black focus:border-red-600 outline-none text-center">
+                </div>
+                <button type="submit" class="flex-grow gradient-red text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-red-600/40 hover:scale-[1.02] active:scale-95 transition-all">Tambah ke Keranjang</button>
+            </div>
+            <div class="flex items-center gap-4 text-gray-400 text-[10px] font-bold uppercase tracking-widest">
+                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                Garansi Sparepart 30 Hari
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('../layouts/footer') %>

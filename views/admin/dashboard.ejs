@@ -1,0 +1,50 @@
+<%- include('../layouts/header') %>
+
+<div class="mb-10 flex items-center justify-between">
+    <div>
+        <h2 class="text-3xl font-black text-gray-900 border-l-8 border-red-600 pl-6 uppercase tracking-tighter">Admin <span class="text-red-600">Dashboard</span></h2>
+        <p class="text-gray-500 text-sm mt-1 font-medium italic">Overview performa Pusat Sparepart OI</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="bg-white p-10 rounded-3xl shadow-xl flex items-center justify-between border-b-4 border-red-600 group hover:bg-gray-50 transition-all">
+        <div>
+            <p class="text-gray-400 text-xs font-black uppercase tracking-widest mb-1">Total Produk</p>
+            <h3 class="text-5xl font-black text-gray-900 leading-none"><%= stats.products %></h3>
+        </div>
+        <div class="bg-red-50 p-4 rounded-2xl group-hover:scale-110 transition-transform">
+            <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+        </div>
+    </div>
+    
+    <div class="bg-white p-10 rounded-3xl shadow-xl flex items-center justify-between border-b-4 border-blue-600 group hover:bg-gray-50 transition-all">
+        <div>
+            <p class="text-gray-400 text-xs font-black uppercase tracking-widest mb-1">Total User</p>
+            <h3 class="text-5xl font-black text-gray-900 leading-none"><%= stats.users %></h3>
+        </div>
+        <div class="bg-blue-50 p-4 rounded-2xl group-hover:scale-110 transition-transform">
+            <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 01-12 0v1z"></path></svg>
+        </div>
+    </div>
+    
+    <div class="bg-white p-10 rounded-3xl shadow-xl flex items-center justify-between border-b-4 border-green-600 group hover:bg-gray-50 transition-all">
+        <div>
+            <p class="text-gray-400 text-xs font-black uppercase tracking-widest mb-1">Total Pesanan</p>
+            <h3 class="text-5xl font-black text-gray-900 leading-none"><%= stats.orders %></h3>
+        </div>
+        <div class="bg-green-50 p-4 rounded-2xl group-hover:scale-110 transition-transform">
+            <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+        </div>
+    </div>
+</div>
+
+<div class="mt-12 bg-gray-900 rounded-3xl p-12 text-white relative overflow-hidden shadow-2xl">
+    <div class="absolute right-0 bottom-0 opacity-10">
+        <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    </div>
+    <h4 class="text-2xl font-black mb-4 uppercase">Selamat Datang, Administrator OI!</h4>
+    <p class="text-gray-400 font-medium max-w-2xl leading-relaxed">Anda memiliki kendali penuh atas stok produk, manajemen user, dan validasi pesanan. Pastikan setiap bukti transfer divalidasi dengan seksama untuk menjaga integritas transaksi.</p>
+</div>
+
+<%- include('../layouts/footer') %>

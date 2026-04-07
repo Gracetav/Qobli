@@ -1,0 +1,89 @@
+<%- include('../layouts/header') %>
+
+<div class="mb-10">
+    <h2 class="text-3xl font-black text-gray-900 border-l-8 border-red-600 pl-6 uppercase tracking-tighter">Keranjang <span class="text-red-600">Belanja</span></h2>
+    <p class="text-gray-500 text-sm mt-1 font-medium italic">Rincian produk yang akan dipesan</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div class="lg:col-span-2 space-y-8">
+        <% if(cart.length > 0) { %>
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+                <div class="p-10 space-y-8">
+                    <% cart.forEach(item => { %>
+                        <div class="flex items-center gap-6 pb-6 border-b border-gray-100 last:border-0 last:pb-0 group">
+                            <div class="h-24 w-24 bg-gray-50 rounded-2xl overflow-hidden p-1 border border-gray-100 shrink-0">
+                                <% if(item.image) { %>
+                                    <img src="/uploads/products/<%= item.image %>" class="h-full w-full object-contain">
+                                <% } %>
+                            </div>
+                            <div class="flex-grow">
+                                <h5 class="text-xl font-black text-gray-900 uppercase tracking-tight"><%= item.name %></h5>
+                                <div class="flex items-center gap-4 mt-2">
+                                    <span class="text-red-600 font-bold">Rp<%= item.price.toLocaleString('id-ID') %></span>
+                                    <span class="text-xs text-gray-400 font-bold uppercase tracking-widest whitespace-nowrap">x <%= item.qty %> items</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xl font-black text-gray-900 mb-2">Rp<%= (item.price * item.qty).toLocaleString('id-ID') %></p>
+                                <a href="/user/cart/remove/<%= item.id %>" class="text-red-600 hover:text-red-700 font-bold text-xs uppercase tracking-widest flex items-center gap-2 justify-end transition-colors group-hover:underline decoration-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Hapus
+                                </a>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden py-32 px-10 text-center border-2 border-dashed border-gray-200">
+                <div class="bg-gray-100 inline-block p-10 rounded-full mb-8">
+                    <svg class="w-20 h-20 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-black text-gray-900 uppercase">Keranjang Kosong</h3>
+                <p class="text-gray-400 font-medium mt-2">Segera beli sparepart motor impian Anda!</p>
+                <a href="/" class="inline-block mt-10 gradient-red text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-red-600/30 transform active:scale-95 transition-all">Belanja Sekarang</a>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Summary -->
+    <% if(cart.length > 0) { %>
+        <div class="space-y-8">
+            <div class="bg-gray-900 rounded-3xl shadow-2xl p-10 text-white relative overflow-hidden">
+                <div class="absolute right-[-20%] top-[-10%] opacity-10">
+                    <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                </div>
+                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-10 border-b border-gray-800 pb-4">Ringkasan Pesanan</h4>
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Total Produk</p>
+                        <p class="font-black text-xl"><%= cart.length %> Items</p>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-gray-800 pt-6">
+                        <p class="text-[10px] font-black text-red-500 uppercase tracking-widest">Total Bayar</p>
+                        <p class="text-3xl font-black text-white">Rp<%= total.toLocaleString('id-ID') %></p>
+                    </div>
+                </div>
+                <form action="/user/checkout" method="POST" class="mt-12">
+                    <button type="submit" class="w-full gradient-red text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl shadow-red-600/40 transform active:scale-95 transition-all hover:scale-[1.02]">Checkout Sekarang</button>
+                    <p class="text-center text-[10px] font-bold text-gray-600 uppercase tracking-widest mt-6">Sistem Keamanan Terjamin 100%</p>
+                </form>
+            </div>
+            
+            <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+                <h5 class="text-xs font-black text-gray-900 uppercase tracking-widest mb-4">Informasi Pembayaran</h5>
+                <p class="text-xs text-gray-400 font-medium leading-relaxed">Setelah checkout, Anda diwajibkan melakukan transfer manual ke salah satu rekening kami dan mengupload bukti transfer.</p>
+                <div class="mt-6 flex items-center gap-4 border-2 border-red-50 p-4 rounded-2xl">
+                    <div class="bg-red-600 text-white p-2 rounded-lg font-black text-[10px]">BANK</div>
+                    <div>
+                        <p class="text-xs font-black text-gray-900">BCA: 1234-5678-90</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">a.n Pusat Sparepart OI</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../layouts/footer') %>

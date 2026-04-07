@@ -1,0 +1,126 @@
+<%- include('../../layouts/header') %>
+
+<div class="mb-10 flex items-center justify-between">
+    <div>
+        <h2 class="text-3xl font-black text-gray-900 border-l-8 border-red-600 pl-6 uppercase tracking-tighter">Status <span class="text-red-600">Pesanan #<%= order.id %></span></h2>
+        <p class="text-gray-500 text-sm mt-1 font-medium italic">Informasi pesanan anda di OI</p>
+    </div>
+    <a href="/user/orders" class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-red-600 transition-colors flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Kembali ke Daftar
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div class="lg:col-span-2 space-y-10">
+        <!-- Status Tracker -->
+        <div class="bg-white p-12 rounded-3xl shadow-xl overflow-hidden relative border border-gray-100 flex items-center gap-8">
+            <% 
+                let statusColor = 'bg-yellow-500';
+                if(order.status === 'paid') statusColor = 'bg-blue-600';
+                if(order.status === 'shipped') statusColor = 'bg-purple-600';
+                if(order.status === 'completed') statusColor = 'bg-green-600';
+                if(order.status === 'rejected') statusColor = 'bg-red-600';
+            %>
+            <div class="<%= statusColor %> p-6 rounded-full text-white shadow-2xl relative z-10">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">Status Anda</p>
+                <h3 class="text-3xl font-black text-gray-900 uppercase tracking-tighter"><%= order.status %></h3>
+                <p class="text-gray-400 font-medium text-sm mt-1 leading-relaxed">
+                    <% if(order.status === 'pending') { %>Segera lakukan pembayaran sebelum stok habis.<% } %>
+                    <% if(order.status === 'paid') { %>Pembayaran dikonfirmasi! Admin sedang menyiapkan barang.<% } %>
+                    <% if(order.status === 'shipped') { %>Barang sedang dalam perjalanan menuju lokasi Anda.<% } %>
+                    <% if(order.status === 'completed') { %>Transaksi selesai! Terima kasih telah belanja di OI.<% } %>
+                    <% if(order.status === 'rejected') { %>Mohon maaf, transaksi dibatalkan karena kendala validasi.<% } %>
+                </p>
+            </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+            <div class="bg-gray-900 text-white px-10 py-5">
+                <h4 class="text-xs font-black uppercase tracking-widest">Detail Item Dipesan</h4>
+            </div>
+            <div class="p-10 space-y-8">
+                <% items.forEach(item => { %>
+                    <div class="flex items-center gap-6 pb-6 border-b border-gray-100 last:border-0 last:pb-0">
+                        <div class="h-20 w-20 bg-gray-50 rounded-2xl overflow-hidden p-1 border border-gray-100 shrink-0">
+                            <% if(item.image) { %>
+                                <img src="/uploads/products/<%= item.image %>" class="h-full w-full object-contain">
+                            <% } %>
+                        </div>
+                        <div class="flex-grow">
+                            <h5 class="text-lg font-black text-gray-900 uppercase tracking-tight"><%= item.name %></h5>
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Jumlah: <%= item.qty %> items</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-black text-gray-900">Rp<%= (item.price * item.qty).toLocaleString('id-ID') %></p>
+                            <p class="text-[10px] text-gray-400 font-bold italic">@Rp<%= item.price.toLocaleString('id-ID') %></p>
+                        </div>
+                    </div>
+                <% }) %>
+                <div class="pt-8 flex justify-between items-center border-t-2 border-dashed border-gray-200">
+                    <p class="text-xl font-black text-gray-900 uppercase tracking-tighter">Total Bayar</p>
+                    <p class="text-4xl font-black text-red-600">Rp<%= order.total_price.toLocaleString('id-ID') %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Upload -->
+    <div class="space-y-10">
+        <div class="bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
+            <h4 class="text-xs font-black text-gray-900 uppercase tracking-widest mb-8 border-b pb-4">Bukti Pembayaran</h4>
+            <% if(payment && payment.proof) { %>
+                <div class="rounded-2xl overflow-hidden border-2 border-red-50 relative group">
+                    <img src="/uploads/payments/<%= payment.proof %>" class="w-full h-auto group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
+                <div class="mt-8">
+                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">Status Pembayaran</p>
+                    <div class="bg-blue-50 text-blue-700 px-6 py-4 rounded-2xl border-2 border-blue-100 flex items-center gap-4">
+                        <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-xs font-bold uppercase tracking-widest leading-relaxed">Menunggu Verifikasi Admin</span>
+                    </div>
+                </div>
+                <% if(order.status === 'pending') { %>
+                    <form action="/user/orders/upload-payment" method="POST" enctype="multipart/form-data" class="mt-10">
+                        <input type="hidden" name="order_id" value="<%= order.id %>">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Re-upload Bukti Baru (Opsional)</label>
+                        <input type="file" name="proof" class="w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-gray-100 file:text-gray-900 hover:file:bg-gray-200 cursor-pointer">
+                        <button type="submit" class="w-full mt-4 bg-gray-900 text-white py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:bg-gray-800 transition-all active:scale-95">Update Bukti</button>
+                    </form>
+                <% } %>
+            <% } else { %>
+                <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-3xl py-12 px-6 text-center">
+                    <svg class="w-16 h-16 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V5a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <p class="text-xs text-gray-400 font-black uppercase tracking-widest mb-8">Bukti Belum Diupload</p>
+                    <form action="/user/orders/upload-payment" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="order_id" value="<%= order.id %>">
+                        <input type="file" name="proof" required class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer mb-6">
+                        <button type="submit" class="w-full gradient-red text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-red-600/30 transform active:scale-95 transition-all">Submit Pembayaran</button>
+                    </form>
+                </div>
+            <% } %>
+        </div>
+
+        <div class="bg-gray-100 p-8 rounded-3xl border border-gray-200">
+            <h5 class="text-xs font-black text-gray-900 uppercase tracking-widest mb-4">Metode Transfer</h5>
+            <div class="space-y-4">
+                <div class="flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm">
+                    <span class="bg-blue-600 text-white font-black text-[10px] px-2 py-1 rounded">BCA</span>
+                    <span class="text-sm font-black text-gray-900">1234-5678-90</span>
+                </div>
+                <div class="flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm">
+                    <span class="bg-red-600 text-white font-black text-[10px] px-2 py-1 rounded">MANDIRI</span>
+                    <span class="text-sm font-black text-gray-900">0987-6543-21</span>
+                </div>
+            </div>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-6 text-center italic">a.n Pusat Sparepart OI</p>
+        </div>
+    </div>
+</div>
+
+<%- include('../../layouts/footer') %>

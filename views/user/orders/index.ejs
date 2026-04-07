@@ -1,0 +1,63 @@
+<%- include('../../layouts/header') %>
+
+<div class="mb-10">
+    <h2 class="text-3xl font-black text-gray-900 border-l-8 border-red-600 pl-6 uppercase tracking-tighter">Pesanan <span class="text-red-600">Saya</span></h2>
+    <p class="text-gray-500 text-sm mt-1 font-medium italic">Riwayat belanja Anda di OI</p>
+</div>
+
+<div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="bg-gray-900 text-white uppercase text-[10px] font-black tracking-widest">
+                    <th class="px-8 py-5">Tgl Pesan</th>
+                    <th class="px-8 py-5">Order ID</th>
+                    <th class="px-8 py-5">Total Pembayaran</th>
+                    <th class="px-8 py-5">Status</th>
+                    <th class="px-8 py-5 text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 font-medium">
+                <% orders.forEach(order => { %>
+                    <tr class="hover:bg-red-50/30 transition-colors">
+                        <td class="px-8 py-5 text-gray-400 text-xs"><%= new Date(order.created_at).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'}) %></td>
+                        <td class="px-8 py-5 text-gray-900 font-black">#<%= order.id %></td>
+                        <td class="px-8 py-5 text-red-600 font-black">Rp<%= order.total_price.toLocaleString('id-ID') %></td>
+                        <td class="px-8 py-5">
+                            <% 
+                                let statusClass = 'bg-yellow-100 text-yellow-700';
+                                if(order.status === 'paid') statusClass = 'bg-blue-100 text-blue-700';
+                                if(order.status === 'shipped') statusClass = 'bg-purple-100 text-purple-700';
+                                if(order.status === 'completed') statusClass = 'bg-green-100 text-green-700';
+                                if(order.status === 'rejected') statusClass = 'bg-red-100 text-red-700';
+                            %>
+                            <span class="<%= statusClass %> px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-current shadow-sm shadow-black/5">
+                                <%= order.status %>
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                            <% if(order.status === 'pending') { %>
+                                <a href="/user/orders/<%= order.id %>" class="bg-red-600 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-600/30 hover:scale-[1.02] active:scale-95 transition-all inline-block">Upload Bukti</a>
+                            <% } else { %>
+                                <a href="/user/orders/<%= order.id %>" class="bg-gray-100 text-gray-600 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-gray-200 transition-colors inline-block">Lihat Detail</a>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+                <% if(orders.length === 0) { %>
+                    <tr>
+                        <td colspan="5" class="py-24 text-center">
+                            <div class="bg-gray-100 inline-block p-10 rounded-full mb-8">
+                                <svg class="w-20 h-20 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            </div>
+                            <h3 class="text-2xl font-black text-gray-900 uppercase">Belum ada pesanan</h3>
+                            <p class="text-gray-400 font-medium mt-2">Daftar pesanan Anda akan muncul di sini.</p>
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../../layouts/footer') %>
