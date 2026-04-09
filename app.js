@@ -10,11 +10,18 @@ const app = express();
 
 // Database configuration
 const dbConfig = {
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST || '127.0.0.1',
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS || '',
+    password: process.env.DB_PASS || process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'pusat_sparepart_oi'
 };
+
+console.log('--- Database Config Debug ---');
+console.log('Host:', dbConfig.host);
+console.log('User:', dbConfig.user);
+console.log('Password set:', dbConfig.password ? 'YES' : 'NO (Empty)');
+console.log('Database:', dbConfig.database);
+console.log('-----------------------------');
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
