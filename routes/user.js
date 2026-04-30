@@ -12,9 +12,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get('/products/:id', userController.getProductDetail);
-router.post('/cart/add', isLoggedIn, userController.addToCart);
-router.get('/cart', userController.getCart);
-router.get('/cart/remove/:id', userController.removeFromCart);
+router.post('/cart/add', isLoggedIn, isUser, userController.addToCart);
+router.get('/cart', isLoggedIn, isUser, userController.getCart);
+router.get('/cart/remove/:id', isLoggedIn, isUser, userController.removeFromCart);
 
 router.post('/checkout', isLoggedIn, isUser, userController.checkout);
 router.get('/orders', isLoggedIn, isUser, userController.getOrders);

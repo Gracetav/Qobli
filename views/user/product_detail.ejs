@@ -38,6 +38,7 @@
             <p class="text-gray-500 font-medium leading-relaxed"><%= product.description || 'Tidak ada deskripsi untuk produk ini.' %></p>
         </div>
 
+        <% if (user) { %>
         <form action="/user/cart/add" method="POST" class="space-y-6 pt-6 ">
             <input type="hidden" name="product_id" value="<%= product.id %>">
             <div class="flex items-end gap-6">
@@ -52,6 +53,12 @@
                 Garansi Sparepart 30 Hari
             </div>
         </form>
+        <% } else { %>
+        <div class="pt-10">
+            <a href="/auth/login" class="block w-full gradient-red text-white py-5 rounded-2xl font-black uppercase tracking-widest text-center text-xs shadow-xl shadow-red-600/30 transform active:scale-95 transition-all">Login untuk Membeli</a>
+            <p class="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-4">Akses khusus pelanggan terdaftar</p>
+        </div>
+        <% } %>
     </div>
 </div>
 

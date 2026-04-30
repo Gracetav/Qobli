@@ -52,6 +52,7 @@
                     </div>
                     <div class="flex gap-2">
                         <a href="/user/products/<%= product.id %>" class="flex-grow bg-white border-2 border-red-600 text-red-600 font-bold px-4 py-3 rounded-2xl text-center hover:bg-red-50 transform active:scale-95 transition-all text-xs uppercase tracking-widest shadow-xl shadow-red-500/5">Detail</a>
+                        <% if (user) { %>
                         <form action="/user/cart/add" method="POST">
                             <input type="hidden" name="product_id" value="<%= product.id %>">
                             <input type="hidden" name="qty" value="1">
@@ -59,6 +60,11 @@
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                             </button>
                         </form>
+                        <% } else { %>
+                        <a href="/auth/login" class="bg-gray-800 text-white px-5 py-3 rounded-2xl hover:bg-red-600 transform active:scale-95 transition-all shadow-xl flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                        </a>
+                        <% } %>
                     </div>
                 </div>
             </div>
