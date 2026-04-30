@@ -36,7 +36,7 @@
                             </div>
                         </td>
                         <td class="px-8 py-5 text-gray-900"><%= product.name %></td>
-                        <td class="px-8 py-5 text-red-600 font-black">Rp<%= product.price.toLocaleString('id-ID') %></td>
+                        <td class="px-8 py-5 text-red-600 font-black"><%= formatCurrency(product.price) %></td>
                         <td class="px-8 py-5"><span class="bg-gray-100 px-3 py-1 rounded-full text-xs font-bold text-gray-600"><%= product.stock %> items</span></td>
                         <td class="px-8 py-5">
                             <div class="flex items-center justify-center gap-3">

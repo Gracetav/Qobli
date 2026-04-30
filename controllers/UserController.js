@@ -163,7 +163,53 @@ const uploadPayment = async (req, res) => {
     }
 };
 
+const cancelOrder = async (req, res) => {
+    const { id } = req.params;
+    const user_id = req.session.user.id;
+    
+    try {
+        const connection = await global.db.getConnection();
+        await connection.beginTransaction();
+        
+        try {
+            const [orders] = await connection.query('SELECT status FROM orders WHERE id = ? AND user_id = ?', [id, user_id]);
+            if (orders.length === 0) {
+                connection.release();
+                return res.status(404).send('Pesanan tidak ditemukan');
+            }
+            
+            const order = orders[0];
+            if (order.status !== 'pending') {
+                req.flash('error_msg', 'Hanya pesanan pending yang bisa dibatalkan');
+                connection.release();
+                return res.redirect('/user/orders/' + id);
+            }
+            
+            // Update status to cancelled
+            await connection.query('UPDATE orders SET status = "cancelled" WHERE id = ?', [id]);
+            
+            // Return stock
+            const [items] = await connection.query('SELECT product_id, qty FROM order_items WHERE order_id = ?', [id]);
+            for (let item of items) {
+                await connection.query('UPDATE products SET stock = stock + ? WHERE id = ?', [item.qty, item.product_id]);
+            }
+            
+            await connection.commit();
+            req.flash('success_msg', 'Pesanan berhasil dibatalkan');
+            res.redirect('/user/orders/' + id);
+        } catch (err) {
+            await connection.rollback();
+            throw err;
+        } finally {
+            connection.release();
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+};
+
 module.exports = { 
     getProducts, getProductDetail, addToCart, getCart, removeFromCart, 
-    checkout, getOrders, getOrderDetail, uploadPayment 
+    checkout, getOrders, getOrderDetail, uploadPayment, cancelOrder 
 };

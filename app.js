@@ -42,6 +42,13 @@ app.use(flash());
 
 // Global variables for templates
 app.use((req, res, next) => {
+    res.locals.formatCurrency = (value) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(value);
+    };
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.user = req.session.user || null;
@@ -91,7 +98,7 @@ async function initDB() {
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 user_id INT,
                 total_price DECIMAL(10,2) NOT NULL,
-                status ENUM('pending', 'paid', 'shipped', 'completed', 'rejected') DEFAULT 'pending',
+                status ENUM('pending', 'paid', 'shipped', 'completed', 'rejected', 'cancelled') DEFAULT 'pending',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
@@ -118,6 +125,11 @@ async function initDB() {
                 FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
             )
         `);
+
+        // Update ENUM if it already exists
+        await db.query(`
+            ALTER TABLE orders MODIFY COLUMN status ENUM('pending', 'paid', 'shipped', 'completed', 'rejected', 'cancelled') DEFAULT 'pending'
+        `).catch(err => console.log('Enum update status:', err.message));
 
         // Initial Admin Check
         const [rows] = await db.query('SELECT * FROM users WHERE role = "admin" LIMIT 1');

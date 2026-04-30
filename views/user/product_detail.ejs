@@ -28,7 +28,7 @@
         <div>
             <h2 class="text-4xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter mb-4"><%= product.name %></h2>
             <div class="flex items-center gap-6">
-                <span class="text-3xl md:text-4xl font-black text-red-600">Rp<%= product.price.toLocaleString('id-ID') %></span>
+                <span class="text-3xl md:text-4xl font-black text-red-600"><%= formatCurrency(product.price) %></span>
                 <span class="text-xs bg-gray-100 px-4 py-2 rounded-full font-bold text-gray-500 uppercase tracking-widest border border-gray-200">Stok: <%= product.stock %> items</span>
             </div>
         </div>

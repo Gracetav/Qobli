@@ -138,9 +138,45 @@ const updateOrderStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
     try {
-        await global.db.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
-        req.flash('success_msg', 'Status pesanan berhasil diubah!');
-        res.redirect('/admin/orders/' + id);
+        const connection = await global.db.getConnection();
+        await connection.beginTransaction();
+        
+        try {
+            const [orders] = await connection.query('SELECT status FROM orders WHERE id = ?', [id]);
+            if (orders.length === 0) {
+                connection.release();
+                return res.status(404).send('Pesanan tidak ditemukan');
+            }
+            
+            const oldStatus = orders[0].status;
+            const returnStockStatuses = ['rejected', 'cancelled'];
+            
+            // If changing TO a return-stock status from a non-return-stock status
+            if (!returnStockStatuses.includes(oldStatus) && returnStockStatuses.includes(status)) {
+                const [items] = await connection.query('SELECT product_id, qty FROM order_items WHERE order_id = ?', [id]);
+                for (let item of items) {
+                    await connection.query('UPDATE products SET stock = stock + ? WHERE id = ?', [item.qty, item.product_id]);
+                }
+            } 
+            // If changing FROM a return-stock status to a non-return-stock status
+            else if (returnStockStatuses.includes(oldStatus) && !returnStockStatuses.includes(status)) {
+                const [items] = await connection.query('SELECT product_id, qty FROM order_items WHERE order_id = ?', [id]);
+                for (let item of items) {
+                    await connection.query('UPDATE products SET stock = stock - ? WHERE id = ?', [item.qty, item.product_id]);
+                }
+            }
+
+            await connection.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
+            await connection.commit();
+            
+            req.flash('success_msg', 'Status pesanan berhasil diupdate!');
+            res.redirect('/admin/orders/' + id);
+        } catch (err) {
+            await connection.rollback();
+            throw err;
+        } finally {
+            connection.release();
+        }
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');

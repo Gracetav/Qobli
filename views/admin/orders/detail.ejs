@@ -25,12 +25,28 @@
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Status Saat Ini</p>
                 <% 
                     let statusClass = 'bg-yellow-100 text-yellow-700';
-                    if(order.status === 'paid') statusClass = 'bg-blue-100 text-blue-700';
-                    if(order.status === 'shipped') statusClass = 'bg-purple-100 text-purple-700';
-                    if(order.status === 'completed') statusClass = 'bg-green-100 text-green-700';
-                    if(order.status === 'rejected') statusClass = 'bg-red-100 text-red-700';
+                    let statusLabel = order.status;
+                    if(order.status === 'pending') {
+                        statusClass = 'bg-yellow-100 text-yellow-700';
+                        statusLabel = 'AWAITING VERIFICATION';
+                    } else if(order.status === 'paid') {
+                        statusClass = 'bg-blue-100 text-blue-700';
+                        statusLabel = 'PAID';
+                    } else if(order.status === 'shipped') {
+                        statusClass = 'bg-purple-100 text-purple-700';
+                        statusLabel = 'SHIPPED';
+                    } else if(order.status === 'completed') {
+                        statusClass = 'bg-green-100 text-green-700';
+                        statusLabel = 'COMPLETED';
+                    } else if(order.status === 'rejected') {
+                        statusClass = 'bg-red-100 text-red-700';
+                        statusLabel = 'REJECTED';
+                    } else if(order.status === 'cancelled') {
+                        statusClass = 'bg-gray-100 text-gray-700';
+                        statusLabel = 'CANCELLED';
+                    }
                 %>
-                <span class="<%= statusClass %> px-6 py-2 rounded-full text-xs font-black uppercase tracking-tighter border border-current shadow-lg"><%= order.status %></span>
+                <span class="<%= statusClass %> px-6 py-2 rounded-full text-xs font-black uppercase tracking-tighter border border-current shadow-lg"><%= statusLabel %></span>
             </div>
         </div>
 
@@ -52,14 +68,14 @@
                             <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Jumlah: <%= item.qty %> items</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-xl font-black text-red-600">Rp<%= (item.price * item.qty).toLocaleString('id-ID') %></p>
-                            <p class="text-[10px] text-gray-400 font-bold italic">@Rp<%= item.price.toLocaleString('id-ID') %></p>
+                            <p class="text-xl font-black text-red-600"><%= formatCurrency(item.price * item.qty) %></p>
+                            <p class="text-[10px] text-gray-400 font-bold italic">@<%= formatCurrency(item.price) %></p>
                         </div>
                     </div>
                 <% }) %>
                 <div class="pt-8 flex justify-between items-center border-t-2 border-dashed border-gray-200">
                     <p class="text-xl font-black text-gray-900 uppercase tracking-tighter">Total Pembayaran</p>
-                    <p class="text-3xl font-black text-red-600">Rp<%= order.total_price.toLocaleString('id-ID') %></p>
+                    <p class="text-3xl font-black text-red-600"><%= formatCurrency(order.total_price) %></p>
                 </div>
             </div>
         </div>
@@ -104,6 +120,10 @@
                     <label class="flex items-center gap-4 cursor-pointer group">
                         <input type="radio" name="status" value="rejected" class="w-6 h-6 border-gray-700 bg-gray-800 text-red-600 focus:ring-red-500 focus:ring-offset-gray-900" <%= order.status === 'rejected' ? 'checked' : '' %>>
                         <span class="text-sm font-black uppercase tracking-widest group-hover:text-red-500 transition-colors">Reject</span>
+                    </label>
+                    <label class="flex items-center gap-4 cursor-pointer group">
+                        <input type="radio" name="status" value="cancelled" class="w-6 h-6 border-gray-700 bg-gray-800 text-gray-600 focus:ring-gray-500 focus:ring-offset-gray-900" <%= order.status === 'cancelled' ? 'checked' : '' %>>
+                        <span class="text-sm font-black uppercase tracking-widest group-hover:text-gray-500 transition-colors">Cancel Transaction</span>
                     </label>
                 </div>
                 <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] mt-8 shadow-xl shadow-red-900/40 transition-all active:scale-95">Update Transaksi</button>

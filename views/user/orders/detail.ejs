@@ -21,19 +21,25 @@
                 if(order.status === 'shipped') statusColor = 'bg-purple-600';
                 if(order.status === 'completed') statusColor = 'bg-green-600';
                 if(order.status === 'rejected') statusColor = 'bg-red-600';
+                if(order.status === 'cancelled') statusColor = 'bg-gray-600';
+                
+                let statusLabel = order.status;
+                if(order.status === 'pending') statusLabel = 'AWAITING VERIFICATION';
+                if(order.status === 'cancelled') statusLabel = 'CANCELLED';
             %>
             <div class="<%= statusColor %> p-6 rounded-full text-white shadow-2xl relative z-10">
                 <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             </div>
             <div>
                 <p class="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">Status Anda</p>
-                <h3 class="text-3xl font-black text-gray-900 uppercase tracking-tighter"><%= order.status %></h3>
+                <h3 class="text-3xl font-black text-gray-900 uppercase tracking-tighter"><%= statusLabel %></h3>
                 <p class="text-gray-400 font-medium text-sm mt-1 leading-relaxed">
                     <% if(order.status === 'pending') { %>Segera lakukan pembayaran sebelum stok habis.<% } %>
                     <% if(order.status === 'paid') { %>Pembayaran dikonfirmasi! Admin sedang menyiapkan barang.<% } %>
                     <% if(order.status === 'shipped') { %>Barang sedang dalam perjalanan menuju lokasi Anda.<% } %>
                     <% if(order.status === 'completed') { %>Transaksi selesai! Terima kasih telah belanja di OI.<% } %>
-                    <% if(order.status === 'rejected') { %>Mohon maaf, transaksi dibatalkan karena kendala validasi.<% } %>
+                    <% if(order.status === 'rejected') { %>Mohon maaf, transaksi ditolak oleh admin.<% } %>
+                    <% if(order.status === 'cancelled') { %>Pesanan telah dibatalkan.<% } %>
                 </p>
             </div>
         </div>
@@ -56,14 +62,14 @@
                             <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Jumlah: <%= item.qty %> items</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-xl font-black text-gray-900">Rp<%= (item.price * item.qty).toLocaleString('id-ID') %></p>
-                            <p class="text-[10px] text-gray-400 font-bold italic">@Rp<%= item.price.toLocaleString('id-ID') %></p>
+                            <p class="text-xl font-black text-gray-900"><%= formatCurrency(item.price * item.qty) %></p>
+                            <p class="text-[10px] text-gray-400 font-bold italic">@<%= formatCurrency(item.price) %></p>
                         </div>
                     </div>
                 <% }) %>
                 <div class="pt-8 flex justify-between items-center border-t-2 border-dashed border-gray-200">
                     <p class="text-xl font-black text-gray-900 uppercase tracking-tighter">Total Bayar</p>
-                    <p class="text-4xl font-black text-red-600">Rp<%= order.total_price.toLocaleString('id-ID') %></p>
+                    <p class="text-4xl font-black text-red-600"><%= formatCurrency(order.total_price) %></p>
                 </div>
             </div>
         </div>
@@ -102,6 +108,10 @@
                         <input type="file" name="proof" required class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer mb-6">
                         <button type="submit" class="w-full gradient-red text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-red-600/30 transform active:scale-95 transition-all">Submit Pembayaran</button>
                     </form>
+                    
+                    <div class="mt-4 text-center">
+                        <a href="/user/orders/cancel/<%= order.id %>" onclick="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')" class="text-red-500 hover:text-red-400 text-[10px] font-black uppercase tracking-[0.2em] underline decoration-2 underline-offset-8 transition-all">Batalkan Pesanan</a>
+                    </div>
                 </div>
             <% } %>
         </div>

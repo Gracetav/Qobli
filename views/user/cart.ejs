@@ -20,12 +20,12 @@
                             <div class="flex-grow">
                                 <h5 class="text-xl font-black text-gray-900 uppercase tracking-tight"><%= item.name %></h5>
                                 <div class="flex items-center gap-4 mt-2">
-                                    <span class="text-red-600 font-bold">Rp<%= item.price.toLocaleString('id-ID') %></span>
+                                    <span class="text-red-600 font-bold"><%= formatCurrency(item.price) %></span>
                                     <span class="text-xs text-gray-400 font-bold uppercase tracking-widest whitespace-nowrap">x <%= item.qty %> items</span>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-xl font-black text-gray-900 mb-2">Rp<%= (item.price * item.qty).toLocaleString('id-ID') %></p>
+                                <p class="text-xl font-black text-gray-900 mb-2"><%= formatCurrency(item.price * item.qty) %></p>
                                 <a href="/user/cart/remove/<%= item.id %>" class="text-red-600 hover:text-red-700 font-bold text-xs uppercase tracking-widest flex items-center gap-2 justify-end transition-colors group-hover:underline decoration-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                     Hapus
@@ -62,7 +62,7 @@
                     </div>
                     <div class="flex justify-between items-center border-t border-gray-800 pt-6">
                         <p class="text-[10px] font-black text-red-500 uppercase tracking-widest">Total Bayar</p>
-                        <p class="text-3xl font-black text-white">Rp<%= total.toLocaleString('id-ID') %></p>
+                        <p class="text-3xl font-black text-white"><%= formatCurrency(total) %></p>
                     </div>
                 </div>
                 <form action="/user/checkout" method="POST" class="mt-12">

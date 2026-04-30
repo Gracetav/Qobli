@@ -22,17 +22,33 @@
                     <tr class="hover:bg-red-50/30 transition-colors">
                         <td class="px-8 py-5 text-gray-400 text-xs"><%= new Date(order.created_at).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'}) %></td>
                         <td class="px-8 py-5 text-gray-900 font-black">#<%= order.id %></td>
-                        <td class="px-8 py-5 text-red-600 font-black">Rp<%= order.total_price.toLocaleString('id-ID') %></td>
+                        <td class="px-8 py-5 text-red-600 font-black"><%= formatCurrency(order.total_price) %></td>
                         <td class="px-8 py-5">
                             <% 
                                 let statusClass = 'bg-yellow-100 text-yellow-700';
-                                if(order.status === 'paid') statusClass = 'bg-blue-100 text-blue-700';
-                                if(order.status === 'shipped') statusClass = 'bg-purple-100 text-purple-700';
-                                if(order.status === 'completed') statusClass = 'bg-green-100 text-green-700';
-                                if(order.status === 'rejected') statusClass = 'bg-red-100 text-red-700';
+                                let statusLabel = order.status;
+                                if(order.status === 'pending') {
+                                    statusClass = 'bg-yellow-100 text-yellow-700';
+                                    statusLabel = 'AWAITING VERIFICATION';
+                                } else if(order.status === 'paid') {
+                                    statusClass = 'bg-blue-100 text-blue-700';
+                                    statusLabel = 'PAID';
+                                } else if(order.status === 'shipped') {
+                                    statusClass = 'bg-purple-100 text-purple-700';
+                                    statusLabel = 'SHIPPED';
+                                } else if(order.status === 'completed') {
+                                    statusClass = 'bg-green-100 text-green-700';
+                                    statusLabel = 'COMPLETED';
+                                } else if(order.status === 'rejected') {
+                                    statusClass = 'bg-red-100 text-red-700';
+                                    statusLabel = 'REJECTED';
+                                } else if(order.status === 'cancelled') {
+                                    statusClass = 'bg-gray-100 text-gray-700';
+                                    statusLabel = 'CANCELLED';
+                                }
                             %>
                             <span class="<%= statusClass %> px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-current shadow-sm shadow-black/5">
-                                <%= order.status %>
+                                <%= statusLabel %>
                             </span>
                         </td>
                         <td class="px-8 py-5 text-right">
