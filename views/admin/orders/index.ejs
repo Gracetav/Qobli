@@ -21,7 +21,7 @@
                 <% orders.forEach(order => { %>
                     <tr class="hover:bg-red-50/30 transition-colors">
                         <td class="px-8 py-5 text-gray-400 text-xs"><%= new Date(order.created_at).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'}) %></td>
-                        <td class="px-8 py-5 text-gray-900 font-bold"><%= order.user_name %></td>
+                        <td class="px-8 py-5 text-gray-900 font-bold"><%= order.user_name || 'DELETED USER' %></td>
                         <td class="px-8 py-5 text-red-600 font-black"><%= formatCurrency(order.total_price) %></td>
                         <td class="px-8 py-5">
                             <% 

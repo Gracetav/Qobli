@@ -96,7 +96,7 @@ const getOrders = async (req, res) => {
         const [rows] = await global.db.query(`
             SELECT orders.*, users.name as user_name 
             FROM orders 
-            JOIN users ON orders.user_id = users.id 
+            LEFT JOIN users ON orders.user_id = users.id 
             ORDER BY orders.created_at DESC
         `);
         res.render('admin/orders/index', { orders: rows });
@@ -112,7 +112,7 @@ const getOrderDetail = async (req, res) => {
         const [order] = await global.db.query(`
             SELECT orders.*, users.name as user_name, users.email as user_email
             FROM orders 
-            JOIN users ON orders.user_id = users.id 
+            LEFT JOIN users ON orders.user_id = users.id 
             WHERE orders.id = ?`, [id]);
         
         const [items] = await global.db.query(`
